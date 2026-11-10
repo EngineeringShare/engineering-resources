@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#172333">
+  <title>AC Generation | Engineering Share</title>
+  <style>
+    :root { color-scheme: dark; --surface:#152235; --line:#39495d; --text:#ecf3fa; --muted:#9fb0c4; --accent:#df9b43; }
+    * { box-sizing:border-box; }
+    html,body { width:100%; height:100%; margin:0; }
+    body { display:flex; flex-direction:column; overflow:hidden; background:#0c1420; color:var(--text); font:14px/1.4 system-ui,-apple-system,Segoe UI,Arial,sans-serif; }
+    button,input,a { font:inherit; }
+    button { color:inherit; cursor:pointer; }
+    button:focus-visible,input:focus-visible,a:focus-visible,.slide:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
+    .topbar { min-height:54px; padding:8px clamp(12px,2vw,26px); display:flex; align-items:center; gap:16px; justify-content:space-between; border-bottom:1px solid #253246; background:#142135; }
+    .identity { display:flex; align-items:center; gap:12px; min-width:0; }
+    .logo { display:grid; place-items:center; width:34px; height:34px; border-radius:9px; background:linear-gradient(135deg,#df9b43,#a56727); color:#142030; font-size:22px; font-weight:900; flex:none; }
+    .headings { min-width:0; }
+    .headings strong { display:block; font-size:14px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+    .headings small { display:block; font-size:11px; color:var(--muted); letter-spacing:.035em; }
+    .top-actions { display:flex; gap:8px; align-items:center; }
+    .pill,.control { display:inline-flex; align-items:center; justify-content:center; gap:7px; border:1px solid var(--line); border-radius:8px; padding:7px 12px; background:#1b2c42; text-decoration:none; color:var(--text); white-space:nowrap; }
+    .pill:hover,.control:hover:not(:disabled) { background:#263b55; }
+    .control:disabled { opacity:.4; cursor:default; }
+    .stage-wrap { display:grid; place-items:center; flex:1; padding:clamp(6px,1.5vh,16px); min-height:0; min-width:0; }
+    .slide { position:relative; width:min(100%,calc((100dvh - 144px) * 16 / 9)); max-height:100%; aspect-ratio:16/9; overflow:hidden; border-radius:4px; background:#fff; box-shadow:0 12px 50px #0009; outline-offset:4px; }
+    .slide img { display:block; user-select:none; -webkit-user-drag:none; }
+    .slide-bg { width:100%; height:100%; object-fit:fill; }
+    .animation { position:absolute; overflow:hidden; pointer-events:none; }
+    .animation img { position:absolute; max-width:none; max-height:none; }
+    .controls { background:var(--surface); border-top:1px solid #26374d; padding:10px 16px; display:flex; gap:12px; align-items:center; justify-content:center; min-height:68px; }
+    .nav-buttons { display:flex; gap:7px; }
+    .counter { color:var(--muted); font-variant-numeric:tabular-nums; text-align:center; min-width:72px; font-weight:600; }
+    .progress { flex:1; max-width:620px; min-width:60px; accent-color:var(--accent); cursor:pointer; }
+    .hint { color:#97a6bb; text-align:right; font-size:11px; min-width:110px; }
+    .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+    @media(max-width:600px) {
+      .headings small,.hint,.download-label { display:none; }
+      .topbar { min-height:46px; }
+      .controls { min-height:56px; padding:7px 10px; gap:7px; }
+      .control { padding:7px 9px; }
+      .counter { min-width:58px; font-size:12px; }
+      .slide { width:min(100%,calc((100dvh - 112px) * 16 / 9)); }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="identity">
+      <div class="logo" aria-hidden="true">⚙</div>
+      <div class="headings"><strong>AC Generation</strong><small>ENGINEERING SHARE · ANIMATED PRESENTATION</small></div>
+    </div>
+    <div class="top-actions">
+      <a class="pill" href="AC-Generation.pdf" target="_blank" rel="noopener" title="Open original PDF">↓ <span class="download-label">PDF</span></a>
+      <button class="pill" id="fullscreen" type="button" aria-label="Toggle fullscreen" title="Toggle fullscreen">⛶</button>
+    </div>
+  </header>
+  <main class="stage-wrap">
+    <div id="slide" class="slide" role="group" tabindex="0" aria-roledescription="slide" aria-label="Slide 1"></div>
+    <div id="slide-text" class="sr-only" aria-live="polite"></div>
+  </main>
+  <footer class="controls" aria-label="Presentation controls">
+    <div class="nav-buttons">
+      <button id="previous" class="control" type="button" aria-label="Previous slide" title="Previous slide (←)">←</button>
+      <button id="next" class="control" type="button" aria-label="Next slide" title="Next slide (→)">→</button>
+    </div>
+    <span id="counter" class="counter" aria-live="off">1 / 14</span>
+    <input id="progress" class="progress" type="range" min="1" max="14" step="1" value="1" aria-label="Jump to slide">
+    <span class="hint">← → to navigate</span>
+  </footer>
+  <script>
+    'use strict';
+    const slides = [{"number":1,"title":"AC Generation","text":"AC Generation","background":"assets/slide-01.webp","animations":[]},{"number":2,"title":"What is an AC generator","text":"What is an AC generator An AC generator converts mechanical motion into oscillating single or 3 phase electrical energy AC generators are widely used because AC power is more efficient to transmit over long distances, as its voltage can be easily stepped up or down using transformers They are also widely used as they are simpler to build using slip rings instead of a commutator","background":"assets/slide-02.webp","animations":[]},{"number":3,"title":"Faraday’s Law of Electromagnetic Induction","text":"Faraday’s Law of Electromagnetic Induction The induced EMF (voltage) in a circuit is proportional to the rate of change of magnetic flux through the circuit. This means that moving a magnet near a coil induces an EMF; if the coil is part of a closed circuit, this produces an electric current.","background":"assets/slide-03.webp","animations":[{"src":"assets/image3.gif","x":51.793848,"y":38.171522,"w":39.706152,"h":39.764975,"crop":{"l":0.0,"t":0.0,"r":0.0,"b":0.0},"rotation":0.0,"flipH":false,"flipV":false}]},{"number":4,"title":"Faraday’s Law of Electromagnetic Induction","text":"Faraday’s Law of Electromagnetic Induction Faraday’s law follows this equation: Where: = induced EMF (volts) = number of turns in the coil = magnetic flux (webers) = rate of change of flux","background":"assets/slide-04.webp","animations":[]},{"number":5,"title":"Why AC Generators Produce Sinusoidal","text":"Why AC Generators Produce Sinusoidal As a coil rotates within a magnetic field, the magnetic flux passing through it continually changes. The amount of magnetic flux depends on the angle between the coil and the magnetic field. According to Faraday's Law, the induced EMF depends on the rate of change of magnetic flux. As the coil rotates at a constant speed, the induced EMF varies sinusoidally, producing an AC waveform. The induced EMF reverses polarity every half rotation.","background":"assets/slide-05.webp","animations":[]},{"number":6,"title":"Why AC Generators Produce Sinusoidal","text":"Why AC Generators Produce Sinusoidal The relationship between rotation and induced EMF can be explained by the equations: Where: B = magnetic flux density (T) A = coil area (m²) N = number of turns = angular velocity (rad/s) = angle of rotation (radians)","background":"assets/slide-06.webp","animations":[]},{"number":7,"title":"Construction - Stator","text":"Construction - Stator Definition: The stationary part of an AC generator. Function: Holds the armature windings where AC is induced. Provides the path for magnetic flux. Features: Laminated steel core (reduces eddy current losses). Copper windings. Outer frame for support and cooling. Important Point: In most AC generators, the stator produces the electrical output, while the rotor carries the magnetic field.","background":"assets/slide-07.webp","animations":[]},{"number":8,"title":"Construction - Rotor","text":"Construction - Rotor Definition: The rotating part of an AC generator. Function: Often produces the magnetic field (either by permanent magnets or an electromagnet). Rotates within the stator to induce AC voltage in the windings. Features: Shaft connected to the prime mover (e.g., turbine or engine). Field windings or permanent magnets mounted on the rotor core. Slip rings and brushes supply current to field windings (if electromagnet).","background":"assets/slide-08.webp","animations":[{"src":"assets/image9.gif","x":64.101985,"y":32.321624,"w":26.898023,"h":47.818708,"crop":{"l":0.0,"t":0.0,"r":0.0,"b":0.0},"rotation":0.0,"flipH":false,"flipV":false}]},{"number":9,"title":"Two Generator Setups","text":"Two Generator Setups Rotor Field Setup: Rotor carries the field windings (or magnets). Stator holds the armature windings where AC is induced. Most common in large power stations. Stator Field Setup: Stator carries the field windings. Rotor holds the armature windings where AC is induced. Used in some small machines. Key Difference: Where the AC is induced → either in the rotor coils or in the stator coils. Rotor Field Setup Stator Field Setup","background":"assets/slide-09.webp","animations":[{"src":"assets/image9.gif","x":77.400853,"y":50.0,"w":21.843135,"h":38.83224,"crop":{"l":0.0,"t":0.0,"r":0.0,"b":0.0},"rotation":0.0,"flipH":false,"flipV":false},{"src":"assets/image10.gif","x":71.81542,"y":8.586075,"w":25.230643,"h":29.080592,"crop":{"l":0.45326,"t":0.0,"r":0.0,"b":0.17592},"rotation":0.0,"flipH":false,"flipV":false}]},{"number":10,"title":"Slip Rings & Brushes","text":"Slip Rings & Brushes Definition: Slip rings: circular conductors on the rotor shaft. Brushes: carbon or graphite blocks pressing against slip rings. Function: Together, they transfer AC voltage from the rotating coil to the external circuit. Maintain continuous contact while the rotor spins. They are only needed in stator field setups. Features: Slip rings made of copper or brass. Brushes made of carbon/graphite (good conductor + self-lubricating). Designed for low friction and long service life.","background":"assets/slide-10.webp","animations":[]},{"number":11,"title":"Single vs Poly Phase AC Generation","text":"Single vs Poly Phase AC Generation The number of phases you get from an AC generator is dependant on the number of winding groups you have. They most commonly are single or three phase 3 Phase has voltage separated by 120 degrees","background":"assets/slide-11.webp","animations":[]},{"number":12,"title":"Rotational to Electricity","text":"Rotational to Electricity AC power is generated when the magnet in the system is rotated Often this rotation happens due to a turbine spinning The turbine will be turned by many different sources including wind, water, gas and steam Steam is the most used as it can transfer thermal energy (from burning materials or nuclear fission) to the turbine.","background":"assets/slide-12.webp","animations":[{"src":"assets/image13.gif","x":61.066962,"y":34.527778,"w":27.96875,"h":40.277778,"crop":{"l":0.0,"t":0.0,"r":0.0,"b":0.0},"rotation":0.0,"flipH":false,"flipV":false}]},{"number":13,"title":"How an AC Generator Works (Step by Step)","text":"How an AC Generator Works (Step by Step) Magnetic Field Created The rotor (field) produces a magnetic field — either from permanent magnets or an electromagnet. Field lines pass through the stator windings. Coil Rotation Begins The rotor is turned by a prime mover such as a turbine or engine. As it spins, the magnetic flux through the stator coils continually changes. Electromagnetic Induction Occurs According to Faraday’s Law, a changing magnetic flux induces an EMF (voltage) in the coils. The direction of induced current alternates as the magnetic poles pass the windings. AC Voltage Generated The induced EMF follows a sinusoidal waveform, alternating between positive and negative values. Frequency depends on the rotational speed and number of magnetic poles. Current Delivered to Load Slip rings and brushes maintain contact between the rotating coil and external circuit. The alternating current flows out to supply electrical power.","background":"assets/slide-13.webp","animations":[{"src":"assets/image14.webp","x":71.517856,"y":45.207655,"w":24.730668,"h":29.037927,"crop":{"l":0,"t":0,"r":0,"b":0},"rotation":0.0,"flipH":false,"flipV":false}]},{"number":14,"title":"Frequency of output","text":"Frequency of output The frequency (f) is how many cycles occur per second, measured in Hertz (Hz). Determined by the generator’s speed and number of poles:","background":"assets/slide-14.webp","animations":[]}];
+    const slideEl = document.getElementById('slide');
+    const textEl = document.getElementById('slide-text');
+    const previous = document.getElementById('previous');
+    const next = document.getElementById('next');
+    const counter = document.getElementById('counter');
+    const progress = document.getElementById('progress');
+    const fullscreen = document.getElementById('fullscreen');
+    let current = 0;
+
+    function positionAnimation(item) {
+      const box = document.createElement('div');
+      box.className = 'animation';
+      box.style.left = `${item.x}%`;
+      box.style.top = `${item.y}%`;
+      box.style.width = `${item.w}%`;
+      box.style.height = `${item.h}%`;
+      if (item.rotation) box.style.transform = `rotate(${item.rotation}deg)`;
+      const img = document.createElement('img');
+      img.src = item.src;
+      img.alt = '';
+      img.setAttribute('aria-hidden', 'true');
+      // PowerPoint's source crop is a percentage of the *uncropped* image.
+      const crop = item.crop || {};
+      const left = crop.l || 0, top = crop.t || 0, right = crop.r || 0, bottom = crop.b || 0;
+      const visWidth = Math.max(0.001, 1 - left - right);
+      const visHeight = Math.max(0.001, 1 - top - bottom);
+      img.style.width = `${100 / visWidth}%`;
+      img.style.height = `${100 / visHeight}%`;
+      img.style.left = `${-100 * left / visWidth}%`;
+      img.style.top = `${-100 * top / visHeight}%`;
+      if (item.flipH || item.flipV) img.style.transform = `scale(${item.flipH ? -1 : 1},${item.flipV ? -1 : 1})`;
+      box.append(img);
+      return box;
+    }
+
+    function goToSlide(index) {
+      current = Math.max(0, Math.min(slides.length - 1, index));
+      const data = slides[current];
+      const bg = document.createElement('img');
+      bg.src = data.background;
+      bg.alt = '';
+      bg.className = 'slide-bg';
+      bg.loading = 'eager';
+      bg.draggable = false;
+      slideEl.replaceChildren(bg, ...data.animations.map(positionAnimation));
+      slideEl.setAttribute('aria-label', `Slide ${current + 1}: ${data.title}`);
+      textEl.textContent = `Slide ${current + 1} of ${slides.length}. ${data.text}`;
+      counter.textContent = `${current + 1} / ${slides.length}`;
+      progress.value = String(current + 1);
+      previous.disabled = current === 0;
+      next.disabled = current === slides.length - 1;
+      if (current < slides.length - 1) {
+        const preload = new Image();
+        preload.src = slides[current + 1].background;
+      }
+    }
+
+    previous.addEventListener('click', () => goToSlide(current - 1));
+    next.addEventListener('click', () => goToSlide(current + 1));
+    progress.addEventListener('input', event => goToSlide(Number(event.target.value) - 1));
+    document.addEventListener('keydown', event => {
+      if (event.target === progress) return;
+      if (['ArrowRight', 'PageDown', ' '].includes(event.key)) {
+        event.preventDefault(); goToSlide(current + 1);
+      } else if (['ArrowLeft', 'PageUp'].includes(event.key)) {
+        event.preventDefault(); goToSlide(current - 1);
+      } else if (event.key === 'Home') {
+        event.preventDefault(); goToSlide(0);
+      } else if (event.key === 'End') {
+        event.preventDefault(); goToSlide(slides.length - 1);
+      }
+    });
+    fullscreen.addEventListener('click', async () => {
+      try {
+        if (document.fullscreenElement) await document.exitFullscreen();
+        else await document.documentElement.requestFullscreen();
+      } catch (error) {
+        console.warn('Fullscreen is unavailable in this browser or embed:', error);
+      }
+    });
+    progress.max = String(slides.length);
+    goToSlide(0);
+  </script>
+</body>
+</html>
