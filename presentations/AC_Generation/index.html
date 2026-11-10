@@ -13,35 +13,70 @@
     button,input,a { font:inherit; }
     button { color:inherit; cursor:pointer; }
     button:focus-visible,input:focus-visible,a:focus-visible,.slide:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
-    .topbar { min-height:54px; padding:8px clamp(12px,2vw,26px); display:flex; align-items:center; gap:16px; justify-content:space-between; border-bottom:1px solid #253246; background:#142135; }
+    .topbar { position:relative; z-index:5; min-height:54px; padding:8px clamp(12px,2vw,26px); display:flex; align-items:center; gap:16px; justify-content:space-between; border-bottom:1px solid #253246; background:#142135; }
     .identity { display:flex; align-items:center; gap:12px; min-width:0; }
     .logo { display:grid; place-items:center; width:34px; height:34px; border-radius:9px; background:linear-gradient(135deg,#df9b43,#a56727); color:#142030; font-size:22px; font-weight:900; flex:none; }
     .headings { min-width:0; }
     .headings strong { display:block; font-size:14px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
     .headings small { display:block; font-size:11px; color:var(--muted); letter-spacing:.035em; }
     .top-actions { display:flex; gap:8px; align-items:center; }
+    .view-switch { display:inline-flex; align-items:center; padding:3px; border:1px solid #405268; border-radius:9px; background:#0d192a; gap:2px; }
+    .view-option { border:0; border-radius:6px; padding:6px 10px; background:transparent; color:#b1c0d0; cursor:pointer; font-weight:600; white-space:nowrap; }
+    .view-option[aria-pressed="true"] { background:#e8a54f; color:#162335; box-shadow:0 1px 4px #0005; }
+    .view-option:hover:not([aria-pressed="true"]) { background:#263b55; color:#fff; }
     .pill,.control { display:inline-flex; align-items:center; justify-content:center; gap:7px; border:1px solid var(--line); border-radius:8px; padding:7px 12px; background:#1b2c42; text-decoration:none; color:var(--text); white-space:nowrap; }
     .pill:hover,.control:hover:not(:disabled) { background:#263b55; }
     .control:disabled { opacity:.4; cursor:default; }
-    .stage-wrap { display:grid; place-items:center; flex:1; padding:clamp(6px,1.5vh,16px); min-height:0; min-width:0; }
+    .overlay-indicator { width:10px; height:10px; border-radius:50%; background:transparent; border:1px solid #b4c3d3; }
+    #overlay-button[data-active="true"] { border-color:#c18d4c; }
+    .overlay-panel { position:absolute; right:clamp(12px,2vw,26px); top:calc(100% + 5px); width:min(342px,calc(100vw - 24px)); background:#19283d; color:#ecf3fa; padding:14px; border:1px solid #51647b; border-radius:12px; box-shadow:0 15px 40px #07101bc0; }
+    .overlay-panel strong { display:block; font-size:14px; margin-bottom:3px; }
+    .overlay-panel p { font-size:12px; color:#b6c5d4; margin:0 0 12px; }
+    .overlay-choices { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:7px; }
+    .overlay-choice { display:flex; align-items:center; gap:7px; text-align:left; border:1px solid #3c5068; border-radius:8px; background:#20334a; color:#f1f6fb; min-height:40px; padding:7px; cursor:pointer; font-size:12px; }
+    .overlay-choice:hover { background:#2c425c; }
+    .overlay-choice[aria-pressed="true"] { border-color:#e9aa57; box-shadow:0 0 0 1px #e9aa57 inset; }
+    .swatch { display:block; flex:none; width:19px; height:19px; background:var(--swatch); border:1px solid #a5b3c3; border-radius:50%; }
+    .overlay-strength-row { display:flex; justify-content:space-between; align-items:center; margin:14px 0 4px; font-size:12px; color:#dce6f0; }
+    .overlay-strength { width:100%; accent-color:#e9aa57; }
+    .overlay-strength:disabled { opacity:.4; }
+    .viewer { --overlay-tint:transparent; --overlay-strength:0; flex:1; min-height:0; min-width:0; position:relative; overflow:hidden; }
+    .stage-wrap { height:100%; display:grid; place-items:center; padding:clamp(6px,1.5vh,16px); min-height:0; min-width:0; }
     .slide { position:relative; width:min(100%,calc((100dvh - 144px) * 16 / 9)); max-height:100%; aspect-ratio:16/9; overflow:hidden; border-radius:4px; background:#fff; box-shadow:0 12px 50px #0009; outline-offset:4px; }
     .slide img { display:block; user-select:none; -webkit-user-drag:none; }
     .slide-bg { width:100%; height:100%; object-fit:fill; }
     .animation { position:absolute; overflow:hidden; pointer-events:none; }
     .animation img { position:absolute; max-width:none; max-height:none; }
+    .slide::after,.scroll-slide::after { content:""; position:absolute; inset:0; z-index:2; background:var(--overlay-tint); opacity:var(--overlay-strength); mix-blend-mode:multiply; pointer-events:none; }
+    .scroll-wrap { height:100%; overflow-y:auto; overscroll-behavior:contain; background:#dce3ea; padding:14px clamp(12px,3vw,34px) 28px; scrollbar-gutter:stable; }
+    .scroll-pages { width:min(100%,1180px); margin:0 auto; display:flex; flex-direction:column; gap:16px; }
+    .scroll-page { margin:0; }
+    .scroll-number { display:block; color:#45566b; font-size:12px; font-weight:650; margin:0 0 6px; font-variant-numeric:tabular-nums; }
+    .scroll-slide { position:relative; width:100%; aspect-ratio:16/9; background:#fff; box-shadow:0 3px 15px #26374736; overflow:hidden; }
+    .scroll-slide img { display:block; user-select:none; -webkit-user-drag:none; }
+    [hidden] { display:none !important; }
     .controls { background:var(--surface); border-top:1px solid #26374d; padding:10px 16px; display:flex; gap:12px; align-items:center; justify-content:center; min-height:68px; }
     .nav-buttons { display:flex; gap:7px; }
-    .counter { color:var(--muted); font-variant-numeric:tabular-nums; text-align:center; min-width:72px; font-weight:600; }
+    .counter { color:var(--muted); font-variant-numeric:tabular-nums; text-align:center; min-width:120px; font-weight:600; }
     .progress { flex:1; max-width:620px; min-width:60px; accent-color:var(--accent); cursor:pointer; }
     .hint { color:#97a6bb; text-align:right; font-size:11px; min-width:110px; }
     .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+    @media(max-width:760px) {
+      .topbar { flex-wrap:wrap; gap:6px; }
+      .top-actions { width:100%; justify-content:flex-end; }
+    }
     @media(max-width:600px) {
       .headings small,.hint,.download-label { display:none; }
       .topbar { min-height:46px; }
+      .logo { display:none; }
+      .view-option { padding:6px 7px; font-size:12px; }
+      .pill { padding:7px 9px; font-size:12px; }
       .controls { min-height:56px; padding:7px 10px; gap:7px; }
       .control { padding:7px 9px; }
-      .counter { min-width:58px; font-size:12px; }
+      .counter { min-width:84px; font-size:11px; }
       .slide { width:min(100%,calc((100dvh - 112px) * 16 / 9)); }
+      .scroll-wrap { padding:8px 8px 20px; }
+      .scroll-pages { gap:12px; }
     }
   </style>
 </head>
@@ -52,15 +87,39 @@
       <div class="headings"><strong>AC Generation</strong><small>ENGINEERING SHARE · ANIMATED PRESENTATION</small></div>
     </div>
     <div class="top-actions">
+      <div class="view-switch" role="group" aria-label="Presentation viewing mode">
+        <button class="view-option" id="mode-scroll" type="button" aria-pressed="true">Scroll</button>
+        <button class="view-option" id="mode-slides" type="button" aria-pressed="false">Presentation</button>
+      </div>
+      <button class="pill" id="overlay-button" type="button" aria-expanded="false" aria-controls="overlay-panel" data-active="false"><span class="overlay-indicator" id="overlay-indicator" aria-hidden="true"></span> Overlay</button>
       <a class="pill" href="AC-Generation.pdf" target="_blank" rel="noopener" title="Open original PDF">↓ <span class="download-label">PDF</span></a>
       <button class="pill" id="fullscreen" type="button" aria-label="Toggle fullscreen" title="Toggle fullscreen">⛶</button>
     </div>
+    <section class="overlay-panel" id="overlay-panel" role="group" aria-label="Reading overlay settings" hidden>
+      <strong>Reading overlay</strong>
+      <p>Choose a colour to tint the slides, then adjust its strength.</p>
+      <div class="overlay-choices" role="group" aria-label="Overlay colour">
+        <button class="overlay-choice" type="button" data-color="none" aria-pressed="true"><span class="swatch" style="--swatch:#ffffff" aria-hidden="true"></span> None</button>
+        <button class="overlay-choice" type="button" data-color="yellow" aria-pressed="false"><span class="swatch" style="--swatch:#ffe28a" aria-hidden="true"></span> Yellow</button>
+        <button class="overlay-choice" type="button" data-color="blue" aria-pressed="false"><span class="swatch" style="--swatch:#b8dcff" aria-hidden="true"></span> Blue</button>
+        <button class="overlay-choice" type="button" data-color="green" aria-pressed="false"><span class="swatch" style="--swatch:#bfe8c5" aria-hidden="true"></span> Green</button>
+        <button class="overlay-choice" type="button" data-color="pink" aria-pressed="false"><span class="swatch" style="--swatch:#ffd1e5" aria-hidden="true"></span> Pink</button>
+        <button class="overlay-choice" type="button" data-color="peach" aria-pressed="false"><span class="swatch" style="--swatch:#ffd2ae" aria-hidden="true"></span> Peach</button>
+      </div>
+      <div class="overlay-strength-row"><label for="overlay-strength">Strength</label><output id="overlay-strength-value" for="overlay-strength">25%</output></div>
+      <input class="overlay-strength" id="overlay-strength" type="range" min="10" max="55" value="25" step="5" disabled aria-label="Overlay strength">
+    </section>
   </header>
-  <main class="stage-wrap">
-    <div id="slide" class="slide" role="group" tabindex="0" aria-roledescription="slide" aria-label="Slide 1"></div>
+  <main id="viewer" class="viewer">
+    <section class="stage-wrap" id="stage-wrap" aria-label="Slide-by-slide presentation" hidden>
+      <div id="slide" class="slide" role="group" tabindex="0" aria-roledescription="slide" aria-label="Slide 1"></div>
+    </section>
+    <section class="scroll-wrap" id="scroll-wrap" aria-label="Continuous scrolling presentation" tabindex="0">
+      <div class="scroll-pages" id="scroll-pages"></div>
+    </section>
     <div id="slide-text" class="sr-only" aria-live="polite"></div>
   </main>
-  <footer class="controls" aria-label="Presentation controls">
+  <footer class="controls" aria-label="Presentation controls" hidden>
     <div class="nav-buttons">
       <button id="previous" class="control" type="button" aria-label="Previous slide" title="Previous slide (←)">←</button>
       <button id="next" class="control" type="button" aria-label="Next slide" title="Next slide (→)">→</button>
@@ -79,9 +138,60 @@
     const counter = document.getElementById('counter');
     const progress = document.getElementById('progress');
     const fullscreen = document.getElementById('fullscreen');
+    const stageWrap = document.getElementById('stage-wrap');
+    const scrollWrap = document.getElementById('scroll-wrap');
+    const scrollPages = document.getElementById('scroll-pages');
+    const controls = document.querySelector('.controls');
+    const slidesMode = document.getElementById('mode-slides');
+    const scrollMode = document.getElementById('mode-scroll');
+    const viewer = document.getElementById('viewer');
+    const overlayButton = document.getElementById('overlay-button');
+    const overlayPanel = document.getElementById('overlay-panel');
+    const overlayIndicator = document.getElementById('overlay-indicator');
+    const overlayChoices = Array.from(document.querySelectorAll('.overlay-choice'));
+    const overlayStrength = document.getElementById('overlay-strength');
+    const overlayStrengthValue = document.getElementById('overlay-strength-value');
+    const tintColours = {
+      none:null, yellow:'#ffe28a', blue:'#b8dcff', green:'#bfe8c5',
+      pink:'#ffd1e5', peach:'#ffd2ae'
+    };
     let current = 0;
+    let mode = 'scroll';
+    let scrollBuilt = false;
+    let scrollSections = [];
+    let scrollFrame = 0;
+    let selectedTint = 'none';
+    let strength = 25;
 
-    function positionAnimation(item) {
+    function applyOverlay() {
+      const colour = tintColours[selectedTint];
+      viewer.style.setProperty('--overlay-tint', colour || 'transparent');
+      viewer.style.setProperty('--overlay-strength', colour ? String(strength / 100) : '0');
+      overlayIndicator.style.background = colour || 'transparent';
+      overlayButton.dataset.active = String(Boolean(colour));
+      overlayStrength.value = String(strength);
+      overlayStrength.disabled = !colour;
+      overlayStrengthValue.textContent = `${strength}%`;
+      overlayChoices.forEach(button => {
+        button.setAttribute('aria-pressed', String(button.dataset.color === selectedTint));
+      });
+      try { localStorage.setItem('es-reading-overlay', JSON.stringify({colour:selectedTint, strength})); } catch (_) {}
+    }
+
+    function setOverlayPanel(open) {
+      overlayPanel.hidden = !open;
+      overlayButton.setAttribute('aria-expanded', String(open));
+    }
+
+    try {
+      const saved = JSON.parse(localStorage.getItem('es-reading-overlay') || 'null');
+      if (saved && Object.prototype.hasOwnProperty.call(tintColours, saved.colour)) {
+        selectedTint = saved.colour;
+        if (Number.isFinite(saved.strength)) strength = Math.max(10, Math.min(55, Math.round(saved.strength / 5) * 5));
+      }
+    } catch (_) {}
+
+    function positionAnimation(item, lazy = false) {
       const box = document.createElement('div');
       box.className = 'animation';
       box.style.left = `${item.x}%`;
@@ -91,6 +201,7 @@
       if (item.rotation) box.style.transform = `rotate(${item.rotation}deg)`;
       const img = document.createElement('img');
       img.src = item.src;
+      img.loading = lazy ? 'lazy' : 'eager';
       img.alt = '';
       img.setAttribute('aria-hidden', 'true');
       // PowerPoint's source crop is a percentage of the *uncropped* image.
@@ -107,16 +218,19 @@
       return box;
     }
 
-    function goToSlide(index) {
-      current = Math.max(0, Math.min(slides.length - 1, index));
+    function addSlideMedia(element, data, lazy = false) {
+      const background = document.createElement('img');
+      background.className = 'slide-bg';
+      background.src = data.background;
+      background.alt = '';
+      background.draggable = false;
+      background.loading = lazy ? 'lazy' : 'eager';
+      element.replaceChildren(background, ...(data.animations || []).map(item => positionAnimation(item, lazy)));
+    }
+
+    function renderSlide() {
       const data = slides[current];
-      const bg = document.createElement('img');
-      bg.src = data.background;
-      bg.alt = '';
-      bg.className = 'slide-bg';
-      bg.loading = 'eager';
-      bg.draggable = false;
-      slideEl.replaceChildren(bg, ...data.animations.map(positionAnimation));
+      addSlideMedia(slideEl, data);
       slideEl.setAttribute('aria-label', `Slide ${current + 1}: ${data.title}`);
       textEl.textContent = `Slide ${current + 1} of ${slides.length}. ${data.text}`;
       counter.textContent = `${current + 1} / ${slides.length}`;
@@ -129,15 +243,120 @@
       }
     }
 
-    previous.addEventListener('click', () => goToSlide(current - 1));
-    next.addEventListener('click', () => goToSlide(current + 1));
+    function goToSlide(index) {
+      current = Math.max(0, Math.min(slides.length - 1, index));
+      renderSlide();
+    }
+
+    function advance() {
+      if (current < slides.length - 1) goToSlide(current + 1);
+    }
+
+    function rewind() {
+      if (current > 0) goToSlide(current - 1);
+    }
+
+    function buildScrollPages() {
+      if (scrollBuilt) return;
+      scrollSections = slides.map((data, index) => {
+        const figure = document.createElement('figure');
+        figure.className = 'scroll-page';
+        figure.setAttribute('aria-label', `Slide ${index + 1}: ${data.title}`);
+        const label = document.createElement('figcaption');
+        label.className = 'scroll-number';
+        label.textContent = `Slide ${index + 1} of ${slides.length}`;
+        const frame = document.createElement('div');
+        frame.className = 'scroll-slide';
+        addSlideMedia(frame, data, true);
+        figure.append(label, frame);
+        return figure;
+      });
+      scrollPages.replaceChildren(...scrollSections);
+      scrollBuilt = true;
+    }
+
+    function updateCurrentFromScroll() {
+      if (mode !== 'scroll' || !scrollSections.length) return;
+      const midpoint = scrollWrap.getBoundingClientRect().top + scrollWrap.clientHeight * 0.45;
+      let nearest = 0;
+      let distance = Infinity;
+      for (let index = 0; index < scrollSections.length; index++) {
+        const rect = scrollSections[index].getBoundingClientRect();
+        if (rect.top <= midpoint && rect.bottom >= midpoint) { nearest = index; break; }
+        const gap = Math.min(Math.abs(rect.top - midpoint), Math.abs(rect.bottom - midpoint));
+        if (gap < distance) { distance = gap; nearest = index; }
+      }
+      current = nearest;
+    }
+
+    function setMode(nextMode) {
+      if (nextMode === mode) return;
+      if (mode === 'scroll') updateCurrentFromScroll();
+      mode = nextMode;
+      const scrolling = mode === 'scroll';
+      slidesMode.setAttribute('aria-pressed', String(!scrolling));
+      scrollMode.setAttribute('aria-pressed', String(scrolling));
+      stageWrap.hidden = scrolling;
+      scrollWrap.hidden = !scrolling;
+      controls.hidden = scrolling;
+      if (scrolling) {
+        buildScrollPages();
+        // Align the continuous view with the slide students were reading.
+        requestAnimationFrame(() => {
+          const target = scrollSections[current];
+          if (!target) return;
+          scrollWrap.scrollTop += target.getBoundingClientRect().top - scrollWrap.getBoundingClientRect().top - 8;
+        });
+        slideEl.replaceChildren(); // Avoid keeping duplicate GIFs running out of view.
+      } else {
+        scrollPages.replaceChildren(); // Release hidden GIFs and reconstruct if Scroll is reopened.
+        scrollSections = [];
+        scrollBuilt = false;
+        renderSlide();
+      }
+    }
+
+    overlayButton.addEventListener('click', () => setOverlayPanel(overlayPanel.hidden));
+    overlayChoices.forEach(button => {
+      button.addEventListener('click', () => {
+        selectedTint = button.dataset.color;
+        applyOverlay();
+      });
+    });
+    overlayStrength.addEventListener('input', event => {
+      strength = Number(event.target.value);
+      applyOverlay();
+    });
+    previous.addEventListener('click', rewind);
+    next.addEventListener('click', advance);
+    slideEl.addEventListener('click', () => { if (mode === 'slides') advance(); });
+    slidesMode.addEventListener('click', () => setMode('slides'));
+    scrollMode.addEventListener('click', () => setMode('scroll'));
+    scrollWrap.addEventListener('scroll', () => {
+      if (scrollFrame) return;
+      scrollFrame = requestAnimationFrame(() => {
+        scrollFrame = 0;
+        updateCurrentFromScroll();
+      });
+    }, {passive:true});
     progress.addEventListener('input', event => goToSlide(Number(event.target.value) - 1));
+    document.addEventListener('click', event => {
+      if (!overlayPanel.hidden && !overlayPanel.contains(event.target) && !overlayButton.contains(event.target)) {
+        setOverlayPanel(false);
+      }
+    });
     document.addEventListener('keydown', event => {
-      if (event.target === progress) return;
+      if (event.key === 'Escape' && !overlayPanel.hidden) {
+        setOverlayPanel(false);
+        overlayButton.focus();
+        return;
+      }
+      if (mode !== 'slides') return;
+      if (event.target === progress || ['BUTTON', 'A'].includes(event.target.tagName)) return;
       if (['ArrowRight', 'PageDown', ' '].includes(event.key)) {
-        event.preventDefault(); goToSlide(current + 1);
+        event.preventDefault(); advance();
       } else if (['ArrowLeft', 'PageUp'].includes(event.key)) {
-        event.preventDefault(); goToSlide(current - 1);
+        event.preventDefault(); rewind();
       } else if (event.key === 'Home') {
         event.preventDefault(); goToSlide(0);
       } else if (event.key === 'End') {
@@ -153,7 +372,8 @@
       }
     });
     progress.max = String(slides.length);
-    goToSlide(0);
+    applyOverlay();
+    buildScrollPages();
   </script>
 </body>
 </html>
